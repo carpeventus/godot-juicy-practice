@@ -1,0 +1,13 @@
+extends GPUParticles2D
+
+
+@onready var timer: Timer = $Timer
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	timer.timeout.connect(_on_timer_time_out)
+	timer.start(lifetime)
+	emitting = true
+
+func _on_timer_time_out() -> void:
+	queue_free()
