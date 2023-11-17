@@ -8,17 +8,21 @@ signal hit_block(block)
 @export var bump_timing_scene: PackedScene = preload("res://scenes/effects/bump/bump_timing.tscn")
 @export var bounce_particlels_scene: PackedScene = preload("res://scenes/ball/bounce_particles.tscn")
 @export var bump_particlels_scene: PackedScene = preload("res://scenes/ball/bump_particles.tscn")
+@export var explode_particlels_scene: PackedScene = preload("res://scenes/ball/ball_explode_particles.tscn")
 #endregion
 
+#region speed
 @export var speed: float = 400.0
 @export var accel: float = 20.0
-@export var deccel: float = 10.0
+@export var deccel: float = 3.0
 @export var max_normal_angle: float = 15.0
-@export var max_speed: float = 1600.0
+@export var max_speed: float = 1200.0
 @export var steering_max_speed: float = 1200.0
 @export var steer_force = 110.0
 @export var steer_speed = 300.0
-
+@export var max_speed_color: Color
+@export var speed_threshold: float = 100.0
+#endregion
 
 var acceleration: Vector2 = Vector2.ZERO
 var attached_to = null
@@ -29,9 +33,13 @@ var attracted: bool = false
 var attracted_to = null
 var frames_since_paddle_collison: int = 0
 var max_bump_distance: float = 40.0
+
+#region boost
+var boost_factor_base: float = 1.15
 var boost_factor: float = 1.0
 var boost_factor_perfect: float = 1.3
 var boost_factor_late_early: float = 1.15
+#endregion
 
 #region hitstop
 var hitstop_frames_count = 0
@@ -52,6 +60,7 @@ func _ready() -> void:
 	randomize()
 
 func _process(delta: float) -> void:
+	color_based_on_velocity()
 	scale_based_on_velocity()
 
 
@@ -65,6 +74,7 @@ func _physics_process(delta: float) -> void:
 
 	$VelocityLine.rotation = velocity.angle()
 	frames_since_paddle_collison += 1
+	velocity = lerp(velocity, velocity.limit_length(speed), deccel * delta)
 	
 	if attached_to:
 		global_position = attached_to.global_position
@@ -100,7 +110,6 @@ func _physics_process(delta: float) -> void:
 		frames_since_paddle_collison = 0
 		spawn_bump_particles(collision.get_position(), normal)
 		if boost_factor == 1.0:
-			print("hit by paddle")
 			start_hitstop(hitstop_frames_paddle)
 		# Collision from the top, most of the cases
 		if normal.dot(Vector2.UP) > 0.0:
@@ -111,20 +120,20 @@ func _physics_process(delta: float) -> void:
 				velocity.x += collision.get_collider().velocity.x * 0.6
 				velocity = velocity.normalized()
 				velocity *= length_before_collison
-				velocity *= boost_factor
+				velocity *= (boost_factor + boost_factor_base)
 			else:
 				## Tilt the normal near the edge
 				# Calculate the distance between the collision point and the center of the paddle
 				var distance = collision.get_position() - collision.get_collider().global_position
 				var amount = distance.x/96.0
 				normal = normal.rotated(deg_to_rad(max_normal_angle)*amount)
-				velocity = velocity.bounce(normal)*boost_factor
+				velocity = velocity.bounce(normal)* (boost_factor + boost_factor_base)
 		else:
 			# 撞击边缘
 			# Check if below half of the thickness
 			if collision.get_position().y > collision.get_collider().global_position.y:
 #				print("BELOW HALF")
-				velocity = velocity.bounce(normal)*boost_factor
+				velocity = velocity.bounce(normal) * (boost_factor + boost_factor_base)
 			else:
 				# Lateral normal respecting the sign checked the collision
 				normal = Vector2(sign(normal.x), 0)
@@ -133,7 +142,7 @@ func _physics_process(delta: float) -> void:
 				
 				# Create the new velocity using the velocity length and the normal direction
 				velocity = normal_rotated * velocity.length()
-				velocity *= boost_factor
+				velocity *= (boost_factor + boost_factor_base)
 		# Reset bump boost
 		boost_factor = 1.0
 	elif collision.get_collider().is_in_group("Bricks"):
@@ -162,6 +171,19 @@ func _physics_process(delta: float) -> void:
 func appear() -> void:
 	animation_player.play("RESET")
 	animation_player.play("appear")
+
+func die() -> void:
+	spawn_explode_particles(global_position)
+
+func color_based_on_velocity() -> void:
+	var weight = remap(velocity.length(), speed, max_speed, 0.0, 1.0)
+	sprite.self_modulate = lerp(Color.WHITE, max_speed_color, weight)
+	$Trail2D.self_modulate = lerp(Color.WHITE, max_speed_color, weight)
+	$SpeedParticles.self_modulate = lerp(Color.WHITE, max_speed_color, weight)
+	if velocity.length() > speed + speed_threshold and not $SpeedParticles.emitting:
+		$SpeedParticles.emitting = true
+	else:
+		$SpeedParticles.emitting = false
 	
 func scale_based_on_velocity() -> void:
 	if animation_player.is_playing():
@@ -180,7 +202,12 @@ func spawn_bump_particles(pos: Vector2, normal: Vector2) -> void:
 	get_tree().current_scene.add_child(instance)
 	instance.global_position = pos
 	instance.rotation = normal.angle()
-	
+
+func spawn_explode_particles(pos: Vector2) -> void:
+	var instance = explode_particlels_scene.instantiate() as Node2D
+	get_tree().current_scene.add_child(instance)
+	instance.global_position = pos
+
 
 func start_hitstop(frames_amount: int) -> void:
 	animation_player.pause()
