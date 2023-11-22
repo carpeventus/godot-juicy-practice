@@ -1,8 +1,37 @@
-[gd_scene load_steps=8 format=3 uid="uid://dyy7lp07carkr"]
+[gd_scene load_steps=13 format=3 uid="uid://dyy7lp07carkr"]
 
 [ext_resource type="Script" path="res://scenes/paddle/scripts/paddle.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://bf0hn220saeh8" path="res://scenes/paddle/laser.tscn" id="2"]
 [ext_resource type="Texture2D" uid="uid://blae5o6klukpa" path="res://scenes/paddle/visuals/Paddle.png" id="3"]
+
+[sub_resource type="Gradient" id="Gradient_6xkhb"]
+offsets = PackedFloat32Array(0, 0.131148, 0.692623, 1)
+colors = PackedColorArray(0.206039, 0.434083, 1, 1, 0.922811, 0.295154, 0.3926, 1, 0.818069, 0.795172, 0.340722, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ylfe8"]
+gradient = SubResource("Gradient_6xkhb")
+
+[sub_resource type="Curve" id="Curve_lelsl"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_lcixg"]
+curve = SubResource("Curve_lelsl")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_v6vbj"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 1.0
+angle_max = 720.0
+direction = Vector3(2.08165e-12, 1, 2.08165e-12)
+spread = 5.0
+initial_velocity_min = 50.0
+initial_velocity_max = 60.0
+gravity = Vector3(2.08165e-12, 2.08165e-12, 2.08165e-12)
+scale_min = 18.0
+scale_max = 20.0
+scale_curve = SubResource("CurveTexture_lcixg")
+color_ramp = SubResource("GradientTexture1D_ylfe8")
 
 [sub_resource type="RectangleShape2D" id="1"]
 size = Vector2(152, 34)
@@ -52,11 +81,19 @@ speed = 850.0
 dash_speed = 2500.0
 
 [node name="Laser" parent="." instance=ExtResource("2")]
+visible = false
 
 [node name="Paddle" type="Sprite2D" parent="."]
-modulate = Color(0.0980392, 0.0980392, 0.0980392, 1)
+self_modulate = Color(0.0980392, 0.0980392, 0.0980392, 1)
 position = Vector2(0, 4)
 texture = ExtResource("3")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="Paddle"]
+show_behind_parent = true
+position = Vector2(0, 13)
+amount = 50
+process_material = SubResource("ParticleProcessMaterial_v6vbj")
+local_coords = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("1")
