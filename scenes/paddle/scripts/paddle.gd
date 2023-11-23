@@ -57,6 +57,9 @@ func _process(delta: float) -> void:
 	
 	if Input.is_action_just_pressed("bump"):
 		frames_since_bump = 0
+		# 调用stop可以将动画还原为最开始的样子，因此可以恢复scale等关键帧
+		# 当让也可以为每个动画设置相同的关键帧，在第一帧时设置想要还原的值，例如scale设置为(1, 1)
+		# anim.stop()
 		anim.play("bump")
 		if ball_attached:
 			launch_ball()
@@ -90,6 +93,10 @@ func _physics_process(delta: float) -> void:
 	if collision.get_collider().is_in_group("Ball"):
 		pass
 		
+		
+func ball_bounce() -> void:
+	anim.play("bounce")
+	
 func set_bumping(new_value: bool) -> void:
 	bumping = new_value
 	
