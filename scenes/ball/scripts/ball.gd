@@ -44,7 +44,7 @@ var boost_factor_late_early: float = 1.15
 #region hitstop
 var hitstop_frames_count = 0
 var hitstop_bump_late_late_early = 5
-var hitstop_bump_late_perfect = 10
+var hitstop_bump_perfect = 10
 var hitstop_frames_paddle = 5;
 var hitstop_frames_block = 5;
 var hitstop_frames_bomb = 10;
@@ -113,6 +113,7 @@ func _physics_process(delta: float) -> void:
 		spawn_bump_particles(collision.get_position(), normal)
 		if boost_factor == 1.0:
 			start_hitstop(hitstop_frames_paddle)
+			collision.get_collider().start_hitstop(hitstop_frames_paddle)
 		# Collision from the top, most of the cases
 		if normal.dot(Vector2.UP) > 0.0:
 			# Paddle is moving
@@ -250,6 +251,7 @@ func bump_boost(who) -> void:
 		boost_factor = boost_factor_late_early
 		Globals.stats["bumps_late"] += 1
 		spawn_bump_timing(Globals.BUMP.LATE)
+		who.start_hitstop(hitstop_bump_late_late_early)
 	
 	# Bump perfect
 	elif frames_since_paddle_collison < 5:
@@ -257,13 +259,14 @@ func bump_boost(who) -> void:
 		boost_factor = boost_factor_perfect
 		Globals.stats["bumps_perfect"] += 1
 		spawn_bump_timing(Globals.BUMP.PERFECT)
-	
+		who.start_hitstop(hitstop_bump_perfect)
 	# Bump early
 	else:
 		print("BUMP EARLY")
 		boost_factor = boost_factor_late_early
 		Globals.stats["bumps_early"] += 1
 		spawn_bump_timing(Globals.BUMP.EARLY)
+		who.start_hitstop(hitstop_bump_late_late_early)
 
 func launch() -> void:
 #	velocity = (-global_transform.y).rotated(randf_range(-PI/3.0, PI/3.0)) * speed
