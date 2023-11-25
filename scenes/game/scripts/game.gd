@@ -60,7 +60,7 @@ func layout_bricks() -> void:
 		# 90% chance of having a block
 		if randf() < 0.1: continue
 		brick_tween.tween_callback(add_brick.bind(brick_container, spawn_pos_container.get_child(i).global_position))
-		brick_tween.tween_interval(0.05)
+		brick_tween.tween_interval(0.1)
 	
 func add_brick(parent: Node, pos: Vector2) -> void:
 	var instance = brick_scene.instantiate()

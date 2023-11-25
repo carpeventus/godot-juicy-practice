@@ -1,0 +1,43 @@
+[gd_scene load_steps=8 format=3 uid="uid://d2mi8rjqsru1o"]
+
+[ext_resource type="Texture2D" uid="uid://doqriorw2lonx" path="res://scenes/ball/visuals/ball.png" id="1_5ha66"]
+[ext_resource type="Script" path="res://scenes/brick/bomb_explode_particles.gd" id="2_wks33"]
+
+[sub_resource type="Gradient" id="Gradient_fbveq"]
+offsets = PackedFloat32Array(0, 0.309572, 0.647658)
+colors = PackedColorArray(0.717647, 0.729412, 0.12549, 1, 0.57503, 0.114896, 0.115234, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_4ojxh"]
+gradient = SubResource("Gradient_fbveq")
+
+[sub_resource type="Curve" id="Curve_yxxs5"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.142857, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_tfhs5"]
+curve = SubResource("Curve_yxxs5")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ll4oe"]
+particle_flag_disable_z = true
+emission_shape = 2
+emission_sphere_radius = 200.0
+spread = 180.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.5
+scale_max = 0.5
+scale_curve = SubResource("CurveTexture_tfhs5")
+color_ramp = SubResource("GradientTexture1D_4ojxh")
+
+[node name="BombParticles" type="GPUParticles2D"]
+emitting = false
+amount = 80
+process_material = SubResource("ParticleProcessMaterial_ll4oe")
+texture = ExtResource("1_5ha66")
+lifetime = 0.6
+one_shot = true
+explosiveness = 0.79
+randomness = 0.23
+script = ExtResource("2_wks33")
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true

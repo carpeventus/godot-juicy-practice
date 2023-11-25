@@ -1,8 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://stcivysk52ie"]
+[gd_scene load_steps=11 format=3 uid="uid://stcivysk52ie"]
 
 [ext_resource type="Script" path="res://scenes/brick/scripts/brick.gd" id="1"]
-[ext_resource type="Texture2D" uid="uid://db465xyaa66b4" path="res://scenes/brick/visuals/One.png" id="2"]
-[ext_resource type="Texture2D" uid="uid://dy8bxg728dvar" path="res://scenes/brick/visuals/BlockSmallFull.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://sj3pgix10e46" path="res://scenes/brick/visuals/BlockSmallBorder.png" id="2_faocf"]
+[ext_resource type="Texture2D" uid="uid://bwm4qn3tg7gfe" path="res://scenes/brick/visuals/Bomb.png" id="3_khv81"]
 
 [sub_resource type="RectangleShape2D" id="1"]
 size = Vector2(124.434, 61.9452)
@@ -12,6 +12,65 @@ size = Vector2(62.7676, 61.469)
 
 [sub_resource type="CircleShape2D" id="3"]
 radius = 288.0
+
+[sub_resource type="Animation" id="Animation_q5scm"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Size:scale:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Size:scale:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Type:scale:x")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Type:scale:y")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Type:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
 
 [sub_resource type="Animation" id="Animation_ervgk"]
 resource_name = "appear"
@@ -61,57 +120,29 @@ tracks/3/keys = {
 "times": PackedFloat32Array(0.1, 0.5)
 }
 
-[sub_resource type="Animation" id="Animation_q5scm"]
-length = 0.001
-tracks/0/type = "bezier"
+[sub_resource type="Animation" id="Animation_4uyq0"]
+resource_name = "wiggle"
+length = 2.5
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Size:scale:x")
+tracks/0/path = NodePath("Type:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/1/type = "bezier"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Size:scale:y")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/2/type = "bezier"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Type:scale:x")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/3/type = "bezier"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Type:scale:y")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
+"times": PackedFloat32Array(0, 0.15, 0.3, 0.5, 0.7, 1),
+"transitions": PackedFloat32Array(-2, -2, -2, -2, -2, -2),
+"update": 0,
+"values": [0.0, -0.459022, 0.417134, -0.542797, 0.542797, 3.48787e-16]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_i5jnh"]
 _data = {
 "RESET": SubResource("Animation_q5scm"),
-"appear": SubResource("Animation_ervgk")
+"appear": SubResource("Animation_ervgk"),
+"wiggle": SubResource("Animation_4uyq0")
 }
 
 [node name="Brick" type="StaticBody2D" groups=["Bricks"]]
@@ -134,10 +165,10 @@ collision_mask = 4
 shape = SubResource("3")
 
 [node name="Size" type="Sprite2D" parent="."]
-texture = ExtResource("3")
+texture = ExtResource("2_faocf")
 
 [node name="Type" type="Sprite2D" parent="."]
-texture = ExtResource("2")
+texture = ExtResource("3_khv81")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
