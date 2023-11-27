@@ -29,9 +29,9 @@ func _ready() -> void:
 	
 	pivot_offset = size / 2
 	
-	$VBoxContainer/NextBtn.grab_focus()
+	# $VBoxContainer/NextBtn.grab_focus()
 	update_stats()
-	animated_stats()
+	# animated_stats()
 
 func update_stats() -> void:
 	var ms = Globals.stats["time"] * 1000
