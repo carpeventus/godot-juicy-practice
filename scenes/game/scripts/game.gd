@@ -3,6 +3,7 @@ extends Node2D
 @export var game_over_scene: PackedScene = preload("res://scenes/ui/game_over/game_over.tscn")
 @export var stage_clear_scene: PackedScene = preload("res://scenes/ui/stage_clear/stage_clear.tscn")
 @export var brick_scene: PackedScene = preload("res://scenes/brick/brick.tscn")
+@export var ultimate_ready_scene: PackedScene = preload("res://scenes/ui/ultimate/ultimate_ready.tscn")
 @export var block_energy: int = 10
 @export var energy_block_energy: int = 100
 
@@ -87,6 +88,8 @@ func reset_and_attach_ball() -> void:
 	paddle.stage_clear = false
 	
 func add_energy(value: float) -> void:
+	if energy < 100 and energy + value >= 100:
+		spawn_ultimate_ready()
 	energy += value
 	energy = clamp(energy, 0, 100)
 	energy_bar.set_energy(energy)
@@ -114,6 +117,10 @@ func show_combo(combo: int) -> void:
 	
 func hide_combo() -> void:
 	combo_lbl.visible = false
+	
+func spawn_ultimate_ready() -> void:
+	var ultimate_ready = ultimate_ready_scene.instantiate()
+	hud_canvas_layer.add_child(ultimate_ready)
 	
 ######### SIGNALS ###########
 func on_brick_destroyed(which) -> void:
