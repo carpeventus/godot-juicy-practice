@@ -437,3 +437,4 @@ constant = true
 
 [connection signal="pressed" from="VBoxContainer/RetryBtn" to="." method="_on_RetryBtn_pressed"]
 [connection signal="pressed" from="VBoxContainer/QuitBtn" to="." method="_on_QuitBtn_pressed"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
