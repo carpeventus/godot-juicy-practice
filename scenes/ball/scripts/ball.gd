@@ -107,6 +107,7 @@ func _physics_process(delta: float) -> void:
 	# Update the normal with the paddle's velocity if we collide with the paddle
 	# 和平台碰撞
 	if collision.get_collider().is_in_group("Paddle"):
+		$BumpOthers.play()
 		collision.get_collider().ball_bounce()
 		frames_since_paddle_collison = 0
 		Globals.camera.shake(0.3, 20 ,15)
@@ -151,17 +152,20 @@ func _physics_process(delta: float) -> void:
 	elif collision.get_collider().is_in_group("Bricks"):
 		if collision.get_collider().type == collision.get_collider().TYPE.ENERGY or \
 			collision.get_collider().type == collision.get_collider().TYPE.EXPLOSIVE:
+			$BumpStrong.play()
 			Globals.camera.shake(1.0, 25, 20)	
 			velocity = velocity_before_collision
 			print("hit by bomb")
 			start_hitstop(hitstop_frames_bomb)
 		else:
+			$Bump.play()
 			Globals.camera.shake(0.25, 20, 15)	
 			velocity = velocity.bounce(normal)
 			start_hitstop(hitstop_frames_block)
 			print("hit by brick")
 	else:
 		# 撞墙
+		$BumpOthers.play()
 		Globals.camera.shake(0.15, 20, 5)	
 		velocity = velocity.bounce(normal)
 		spawn_bounce_particles(collision.get_position(), normal)
@@ -179,6 +183,7 @@ func appear() -> void:
 	animation_player.play("appear")
 
 func die() -> void:
+	$Destroy.play()
 	Globals.camera.shake(0.45, 30, 25)	
 	spawn_explode_particles(global_position)
 
