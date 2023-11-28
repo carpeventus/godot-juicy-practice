@@ -162,7 +162,6 @@ func _on_DeathArea_body_entered(body: Node) -> void:
 	if not body.is_in_group("Ball"): return
 	health -= 1
 	health = int(clamp(health, 0, 3))
-	
 	health_bar.set_health(health)
 	
 	body.die()
