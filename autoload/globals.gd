@@ -1,5 +1,7 @@
 extends Node
 
+var pattern
+
 enum BUMP {
 	TOO_FAR,
 	EARLY,

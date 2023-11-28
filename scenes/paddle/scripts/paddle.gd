@@ -66,6 +66,7 @@ func _process(delta: float) -> void:
 		# 当让也可以为每个动画设置相同的关键帧，在第一帧时设置想要还原的值，例如scale设置为(1, 1)
 		# anim.stop()
 		anim.play("bump")
+		Input.start_joy_vibration(0, 0.2, 0.2, 0.3)
 		if ball_attached:
 			launch_ball()
 		else:
